@@ -1,3 +1,6 @@
-Get Dat Internet Stuff
+Get Dat Internetwebs
 
-An script made to get all the internet goodies
+A small pythong script made to get all the internet goodies.
+More info to come
+
+Programmed By:  Sophia Castellarin
