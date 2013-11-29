@@ -12,25 +12,28 @@
 from selenium import webdriver as wd
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys 
+from bs4 import BeautifulSoup
 import sys
+import page
 
 # These are the sites that I like
-sites = ["http://www.io9.com", "http://www.wired.com", "http://www.economist.com", "http://www.hackaday.com", "dgdhgf"]
+sites = ["http://www.io9.com", "http://www.wired.com", "http://www.economist.com", "http://www.hackaday.com"]
 
 # Dictionary of sites that were reached split into good (successfully reached)
 # and bad (not reached).  Will be used primarily to generate a report
 reached = {"good":[], "bad":[]};
+# List where the url to all the cool articles will be stored
+cool = [];
 
 def main():
     dr = wd.Firefox()	# Light the fire under the fox
 
     for i in sites:	# Loops through the sites 
-    
-    # TODO: When tested, the try/except did not catch that "dgdhgf" is 
-    #	    not a web page.  Fix this!
 	try:
 	    dr.get(i)			# Goes to the site
 	    reached["good"].append(i)	# adds to successful list
+	    pg = page.Page(i, dr)
+	    pg.process_page()
 	except:				# So it does not goof
 	    er = "Ooops, an error occured " + sys.exc_info()[0]
 	    print er
