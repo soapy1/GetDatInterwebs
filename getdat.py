@@ -19,6 +19,12 @@ import page
 # These are the sites that I like
 sites = ["http://www.io9.com", "http://www.wired.com", "http://www.economist.com", "http://www.hackaday.com"]
 
+# These are the cool keywords that I am looking for
+key = ["robots", "waterloo", "toronto", "ottawa", "cool", "computer", "arduino", "python", "html", "css", "php", "ruby", "rails", "android", "java", "funny", "mit", "linux", "ubuntu", "arch"]
+# The regex version of the cool keywords that I am looking for
+# TODO: make proper regex
+key_regex = ["robots", "waterloo", "toronto", "ottawa", "cool", "computer", "arduino", "python", "html", "css", "php", "ruby", "rails", "android", "java", "funny", "mit", "linux", "ubuntu", "arch"]
+
 # Dictionary of sites that were reached split into good (successfully reached)
 # and bad (not reached).  Will be used primarily to generate a report
 reached = {"good":[], "bad":[]};
@@ -33,7 +39,7 @@ def main():
 	    dr.get(i)			# Goes to the site
 	    reached["good"].append(i)	# adds to successful list
 	    pg = page.Page(i, dr)
-	    pg.process_page()
+	    pg.process_page(key_regex)
 	except:				# So it does not goof
 	    er = "Ooops, an error occured " + sys.exc_info()[0]
 	    print er
