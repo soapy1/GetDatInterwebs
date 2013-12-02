@@ -28,17 +28,17 @@ class Page():
 	for i in key:				    # goes through the keys
 	    match = re.search(i, str(line), re.I)   # executes regex
 	    if match:				    # checks if match
-		#TODO: all the things are getting caught in except
 		#try:
-		print line.get('href')
-		self.cool.append(line.get('href')) # tries to add it to cool list
+		self.cool.append(tmp) # add it to cool list
 		#except:				    # so it does not goof
 		#    self.errors.append(sys.exc_info()[0])
 	    else:
 		pass				    # don't care about this 
+	    del tmp
 
-    def print_output(self):
-	print self.cool 
-	print '\n' 
-	print self.errors 
+    def print_cool(self):
+	return self.cool
+	#print self.cool 
+	#print '\n' 
+	#print self.errors 
 
