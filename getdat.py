@@ -7,6 +7,26 @@
 #TODO:	step 2: implement search algorithm with python regex
 #	step 3: search more than just what is in your list
 #	step 4: android
+#
+# Jokes search algorithm:
+# 	basically just has a list of key words.  finds all the href's on a 
+#	web page (hope they are at least kind of descriptive) and compares 
+#	them to the list of key words.  
+#	Still OUTSTANDING, removing the useless urls by another set of keys
+# Proposed revised algorithm
+#	search the whole document for key words.  When one is found take the 
+# 	href before and after it, along with that matching part of the document
+
+# Next steps (ie what I will do tomorrow)
+# 	set it up with a sql database 
+#	db structure (table getdat_main):
+#       _id, website, matching_tag, link
+#
+#	db structure (table getdat_times):
+#	_id, time_run, number_of_results
+#
+#	generate reports from database 
+#	reason for two tables is to practice table joins	
 #------------------------------------------------------------------------------
 
 from selenium import webdriver as wd
@@ -25,8 +45,11 @@ sites = ["http://www.io9.com", "http://www.wired.com", "http://www.economist.com
 # These are the cool keywords that I am looking for
 key = ["robots", "waterloo", "toronto", "ottawa", "cool", "computer", "arduino", "python", "html", "css", "php", "ruby", "rails", "android", "java", "funny", "mit", "linux", "ubuntu", "arch"]
 # The regex version of the cool keywords that I am looking for
-# TODO: make proper regex
-key_regex = ["robots", "waterloo", "toronto", "ottawa", "cool", "computer", "arduino", "python", "html", "css", "php", "ruby", "rails", "android", "java", "funny", "mit", "linux", "ubuntu", "arch"]
+# Really regex does not need to be user here but yolo
+key_regex = ["^robot", "waterloo$", "toronto$", "ottawa$", "^cool$", "computer", "arduino", "python", "^html", "^css", "^php", "ruby", "rails", "android", "java", "^mit$", "linux", "ubuntu", "arch$", "^ai$", "artificial intelligence", "satellite", "^dr.who$", "^doctor who$"]
+# The anti regex key with the purpose to filter out anything that may be annoying
+# based on what the key_regex has.  Probably not the most efficient thing but
+# my regex skills are not that good so we get around that be doing this
 
 # Dictionary of sites that were reached split into good (successfully reached)
 # and bad (not reached).  Will be used primarily to generate a report
@@ -64,7 +87,7 @@ def gen_report():
     
     out = open('interwebs.txt', 'w')	# Opens a file to write to
 
-    out.write(time.strftime("%d/%m/%Y/%H:%M:%S"))
+    out.write(time.strftime("%d/%m/%Y, %H:%M:%S"))
     # For the "good" part of the dictionary
     out.write("\nSuccessfully reached the following pages: \n")
     for i in reached["good"]:
@@ -73,7 +96,8 @@ def gen_report():
     # For the "bad" part of the dictionary
     out.write("\nDone goofed for the following pages: \n")
     for i in reached["bad"]:
-	out.write(i[0] + " Exception: " + i[1] + '\n')
+	a = i[0] , " Exception: " , i[1] , '\n'
+	out.write(str(a))
 
     # For the bamf cool pages
     out.write("\nThe very nice pages are the follwing:  \n")

@@ -7,14 +7,14 @@ class Page():
 
     # list of the goofs
     errors = ["errors"]
-    # list of cool things
-    cool = ["urls"]
 
     def __init__(self, name, dr):
 	self.name = name
 	self.dr = dr
+	self.cool = [name]
 
     # the important function that will allow us to process the html page
+    # note that key must be an array
     def process_page(self, key):
 	doc = bs(self.dr.page_source)	# the webpage is assigned to doc
 	for i in doc.findAll():	    # Loops through the html doc line by line
@@ -28,5 +28,5 @@ class Page():
 			self.cool.append(line)
 
     def get_cool(self):
-	return self.cool
+        return self.cool
 
