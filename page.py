@@ -18,27 +18,15 @@ class Page():
     def process_page(self, key):
 	doc = bs(self.dr.page_source)	# the webpage is assigned to doc
 	for i in doc.findAll():	    # Loops through the html doc line by line
-	    try:
-                self.cool.append(i.get('href')) # tries to add it to cool list
-	    except:		    # So it does not goof
-		self.errors.append(sys.exc_info()[0])	
+	    line = i.get('href')
+	    if (line != None): 
+		print '\nanalyzing: ' , line , '\n'
+		for j in key:
+		    match = re.search(j, str(line), re.I)
+		    if match:
+			print str(line), '\n'
+			self.cool.append(line)
 
-    # function that analyzes the string
-    def analyze(line, key):
-	for i in key:				    # goes through the keys
-	    match = re.search(i, str(line), re.I)   # executes regex
-	    if match:				    # checks if match
-		#try:
-		self.cool.append(tmp) # add it to cool list
-		#except:				    # so it does not goof
-		#    self.errors.append(sys.exc_info()[0])
-	    else:
-		pass				    # don't care about this 
-	    del tmp
-
-    def print_cool(self):
+    def get_cool(self):
 	return self.cool
-	#print self.cool 
-	#print '\n' 
-	#print self.errors 
 
