@@ -1,3 +1,9 @@
+#--------------------------------------------------------------------------------
+# File contains the Page class
+# The Page class contains the methods that allow for the analysis of
+# the webpages
+#--------------------------------------------------------------------------------
+
 from bs4 import BeautifulSoup as bs	# This ain't no BS though
 import sys
 import re

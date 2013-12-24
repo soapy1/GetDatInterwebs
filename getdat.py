@@ -19,11 +19,11 @@
 
 # Next steps (ie what I will do tomorrow)
 # 	set it up with a sql database 
-#	db structure (table getdat_main):
-#       _id, website, matching_tag, link
+#	db structure (table main):
+#id int(10), website varchar(255), matching_tag varchar(255), link varchar(255)
 #
-#	db structure (table getdat_times):
-#	_id, time_run, number_of_results
+#	db structure (table times):
+#id int(10), time_run int(10), number_of_results int(10)
 #
 #	generate reports from database 
 #	reason for two tables is to practice table joins	
