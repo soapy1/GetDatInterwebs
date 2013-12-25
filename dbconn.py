@@ -7,7 +7,7 @@ import sys
 
 class Dbconn():
 
-    # opens up a connection to the mysql db
+    # creates the Dbconn object
     def __init__(self, ho, usr, pswd, d):
         self.db = MySQLdb.connect(host=ho, user=usr, passwd=pswd, db=d)
 
@@ -40,5 +40,9 @@ class Dbconn():
     # Closes up the connection to the database 
     def close_conn(self):
 	self.db.close()
+
+    # opens up a connection to the mysql db
+    def start_conn(self, ho, usr, pswd, d):
+        self.db = MySQLdb.connect(host=ho, user=usr, passwd=pswd, db=d)
 
 

@@ -20,10 +20,10 @@
 # Next steps (ie what I will do tomorrow)
 # 	set it up with a sql database 
 #	db structure (table main):
-#id int(10), website varchar(255), matching_tag varchar(255), link varchar(255)
+#id int(10), website varchar(255), matching_tag varchar(255), link varchar(255), wid int(10)
 #
 #	db structure (table times):
-#id int(10), time_run int(10), number_of_results int(10)
+#id int(10), time_run int(10), number_of_results int(10), wid int(10)
 #
 #	generate reports from database 
 #	reason for two tables is to practice table joins	
@@ -35,7 +35,8 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import sys
 import page
-import time
+import datetime
+import dbconn
 
 # These are the sites that I like
 sites = ["http://www.io9.com", "http://www.wired.com", "http://www.economist.com", "http://www.hackaday.com"]
@@ -55,36 +56,50 @@ key_regex = ["^robot", "waterloo$", "toronto$", "ottawa$", "^cool$", "computer",
 # and bad (not reached).  Will be used primarily to generate a report
 reached = {"good":[], "bad":[]};
 # dictionary where the url to all the cool articles will be stored
-cool_pages = [];
+#cool_pages = [];
+
+db = dbconn.Dbconn('localhost','user','password','getdatinterwebs')
+num_matches = 0
 
 def main():
     global cool_pages
     dr = wd.Firefox()	# Light the fire under the fox
 
-    for i in sites:	# Loops through the sites 
+    for i in sites:	# Loops through the sites
+	global num_matches 
 	try:
 	    dr.get(i)			# Goes to the site
 	    reached["good"].append(i)	# adds to successful list
 	    pg = page.Page(i, dr)	# creates page object
-	    pg.process_page(key_regex)	# processes the page for stuff
+	    num_matches += pg.process_page(key_regex)	# processes the page
+	    pg.finish()
 	    #pg.process_page(["feed"])
-	    cool_pages += pg.get_cool() 
+	    #cool_pages += pg.get_cool() 
 	except:				# So it does not goof
 	    er = "Ooops, an error occured " , sys.exc_info()[0]
 	    print er
 	    reached["bad"].append([i, er])	# add to the unsuccessful list
-
+   
+    update_times_table()
     dr.close()	    # Close the window because we no longer need it
-    gen_report()    # Generates report
+   # gen_report()    # Generates report
     print "All done\n"
-    dr.quit()	
-	
+    dr.quit()
+    db.close_conn() 
+
+def update_times_table():
+	cur_date = datetime.datetime.now()
+	cur_date = str(cur_date)
+	q_time = "insert into times values(null, '" + cur_date + "', '"+ str(num_matches) +"')"
+	db.insert_query(q_time)
+
+
 # Generates a report to the file interwebs.txt based on the data in the
 # dictionary reached
 def gen_report():
 
     # TODO: make more "full" reports
-    
+
     out = open('interwebs.txt', 'w')	# Opens a file to write to
 
     out.write(time.strftime("%d/%m/%Y, %H:%M:%S"))
@@ -104,6 +119,7 @@ def gen_report():
     for i in cool_pages:
 	out.write('\n')
 	out.write(i + '\n')
+
 
 if __name__ == "__main__":
     main()
