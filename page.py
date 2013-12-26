@@ -24,7 +24,7 @@ class Page():
 
     # the important function that will allow us to process the html page
     # note that key must be an array
-    def process_page(self, key):
+    def process_page(self, key, rid):
 	num_matches = 0
 	doc = bs(self.dr.page_source)	# the webpage is assigned to doc
 	for i in doc.findAll():	    # Loops through the html doc line by line
@@ -36,7 +36,7 @@ class Page():
 		    if match:
 			num_matches += 1
 			print str(line), '\n'
-			q_main = "insert into main values (null, '"+ self.name+"', '" + j + "', '" + line + "')"
+			q_main = "insert into main values (null, '"+ self.name+"', '" + j + "', '" + line + "', '" + str(rid) + "')"
 			self.db.insert_query(q_main)	# inserts into db
 	return num_matches
 #	cur_date = datetime.datetime.now()

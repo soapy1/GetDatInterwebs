@@ -1,5 +1,5 @@
 # /usr/bin/python2
-
+#http://www.sitepoint.com/understanding-sql-joins-mysql-database/
 #-----------------------------------------------------------------------------
 # A script that finds the cool internet things
 #
@@ -20,10 +20,12 @@
 # Next steps (ie what I will do tomorrow)
 # 	set it up with a sql database 
 #	db structure (table main):
-#id int(10), website varchar(255), matching_tag varchar(255), link varchar(255), wid int(10)
+#id int(10), website varchar(255), matching_tag varchar(255), link varchar(255), rid int(10)
+#create table main (id int(10) auto_increment, website varchar(255), matching_tag varchar(255), link varchar(255), rid int(10), primary key (id) );
 #
 #	db structure (table times):
-#id int(10), time_run int(10), number_of_results int(10), wid int(10)
+#id int(10), time_run int(10), number_of_results int(10), rid int(10)
+#create table times (id int(10) auto_increment, time_run datetime, number_of_results int(10), rid int(10), primary key (id) );
 #
 #	generate reports from database 
 #	reason for two tables is to practice table joins	
@@ -60,10 +62,12 @@ reached = {"good":[], "bad":[]};
 
 db = dbconn.Dbconn('localhost','user','password','getdatinterwebs')
 num_matches = 0
+rid = 0
 
 def main():
     global cool_pages
     dr = wd.Firefox()	# Light the fire under the fox
+    get_rid()
 
     for i in sites:	# Loops through the sites
 	global num_matches 
@@ -71,7 +75,7 @@ def main():
 	    dr.get(i)			# Goes to the site
 	    reached["good"].append(i)	# adds to successful list
 	    pg = page.Page(i, dr)	# creates page object
-	    num_matches += pg.process_page(key_regex)	# processes the page
+	    num_matches += pg.process_page(key_regex, rid)  # processes the page
 	    pg.finish()
 	    #pg.process_page(["feed"])
 	    #cool_pages += pg.get_cool() 
@@ -79,6 +83,7 @@ def main():
 	    er = "Ooops, an error occured " , sys.exc_info()[0]
 	    print er
 	    reached["bad"].append([i, er])	# add to the unsuccessful list
+	
    
     update_times_table()
     dr.close()	    # Close the window because we no longer need it
@@ -87,10 +92,19 @@ def main():
     dr.quit()
     db.close_conn() 
 
+def get_rid():
+    global rid
+    try:
+	q = "select rid from times"
+        rid = db.read_query(q)[0][0] + 1
+    except:
+	print "Ooops, an error occured", sys.exc_info()[0]
+        rid = 0
+
 def update_times_table():
 	cur_date = datetime.datetime.now()
 	cur_date = str(cur_date)
-	q_time = "insert into times values(null, '" + cur_date + "', '"+ str(num_matches) +"')"
+	q_time = "insert into times values(null, '" + cur_date + "', '"+ str(num_matches) +"', '" + str(rid) + "')"
 	db.insert_query(q_time)
 
 
