@@ -87,7 +87,7 @@ def main():
    
     update_times_table()
     dr.close()	    # Close the window because we no longer need it
-   # gen_report()    # Generates report
+    gen_report()    # Generates report
     print "All done\n"
     dr.quit()
     db.close_conn() 
@@ -95,7 +95,7 @@ def main():
 def get_rid():
     global rid
     try:
-	q = "select rid from times"
+	q = "select max(rid) from times"
         rid = db.read_query(q)[0][0] + 1
     except:
 	print "Ooops, an error occured", sys.exc_info()[0]
@@ -114,8 +114,34 @@ def gen_report():
 
     # TODO: make more "full" reports
 
+#select times.time_run, main.website, main.link, times.rid, main.rid from times inner join main on main.rid = 0 and times.rid = 0 GROUP BY main.website;
+
     out = open('interwebs.txt', 'w')	# Opens a file to write to
 
+    # for to db
+    inf_q = "select times.time_run, main.link from times inner join main on main.rid = " + str(rid) + " and times.rid = " + str(rid);
+    inf = db.read_query(inf_q)
+    
+    out.write(str(inf[0][0]))
+    # For the "good" part of the dictionary
+    out.write("\nSuccessfully reached the following pages: \n")
+    for i in reached["good"]:
+	 out.write( i + '\n')
+
+    # For the "bad" part of the dictionary
+    out.write("\nDone goofed for the following pages: \n")
+    for i in reached["bad"]:
+	a = i[0] , " Exception: " , i[1] , '\n'
+	out.write(str(a))
+
+    # For the bamf cool pages
+    out.write("\nThe very nice pages are the follwing:  \n")
+    for i in inf:
+	out.write(i[1])
+	out.write('\n\n')
+	 
+    
+'''
     out.write(time.strftime("%d/%m/%Y, %H:%M:%S"))
     # For the "good" part of the dictionary
     out.write("\nSuccessfully reached the following pages: \n")
@@ -133,6 +159,7 @@ def gen_report():
     for i in cool_pages:
 	out.write('\n')
 	out.write(i + '\n')
+'''
 
 
 if __name__ == "__main__":
